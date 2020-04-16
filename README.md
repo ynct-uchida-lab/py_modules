@@ -35,7 +35,7 @@ $ git clone https://github.com/ynct-uchida-lab/py_modules.git
 ├py_moddules
 │  ├...    
 │
-└scrips
+└scripts
     └main.py
 ```
 
@@ -58,7 +58,8 @@ sys.path.append(os.path.join(workspace, 'py_modules'))
 
 #### 2. インポート
 
-利用したいモジュールをimport
+- 利用したいモジュールをimport
+- 例: ploter/plt_formatをインポート
 
 ```python
 import ploter.plt_format as plt_format
