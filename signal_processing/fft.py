@@ -2,42 +2,35 @@
 import matplotlib.pyplot as plt
 
 def fft(data):
-    F=np.fft.fft(data)
-    
+    data_fft=np.fft.fft(data)
     # 振幅を求めるためにfftされたデータを正規化
-    F_abs = np.abs(F)
-    N=2**20 #サンプル数
-    F_abs_amp = F_abs / N*2
-    F_abs_amp[0] = F_abs_amp[0] / 2
-    return F_abs_amp
+    spectrum = np.abs(data_fft)
+    return spectrum
     
 def main():
     # サンプルデータの作成
-    N = 2**20 # サンプル数
-    dt = 0.0001 # サンプリング周波数
+    dt = 0.01 # サンプリング周波数
+    tm = 1 # データの収録時間
+    N = tm / dt # サンプル数
     f1, f2 = 5, 8 # 周波数
-    A1, A2 = 5, 0 # 振幅
-    p1, p2 = 0, 0 # 位相
+    A1, A2 = 5, 4 # 振幅
 
-    t = np.arange(0, N*dt, dt) # time
-    freq = np.linspace(0, 1.0/dt, N) # frequency step
-
-    data = A1*np.sin(2*np.pi*f1*t + p1) + A2*np.sin(2*np.pi*f2*t + p2) 
+    t = np.arange(0, tm, dt) # 時間
+    data = A1*np.sin(2*np.pi*f1*t) + A2*np.sin(2*np.pi*f2*t) # サンプルデータ
+    freq = np.fft.fftfreq(len(data), dt) # 周波数
     
     #サンプルデータを高速フーリエ変換（FFT)
-    data_f=fft(data)
-    
+    spectrum=fft(data)
+
     #グラフをプロットする
     plt.figure(2)
     plt.subplot(211)
     plt.plot(t,data)
-    plt.xlim(0, 1)
     plt.xlabel("time")
     plt.ylabel("amplitude")
 
     plt.subplot(212)
-    plt.plot(freq,data_f)
-    plt.xlim(0, 10)
+    plt.plot(freq,spectrum)
     plt.xlabel("frequency")
     plt.ylabel("amplitude")
 
