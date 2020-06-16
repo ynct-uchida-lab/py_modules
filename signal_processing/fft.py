@@ -1,6 +1,7 @@
 ﻿import numpy as np
 import matplotlib.pyplot as plt
 
+# データを高速フーリエ変換しスペクトルを求める関数
 def fft(data):
     data_fft=np.fft.fft(data)
     # 振幅を求めるためにfftされたデータを正規化
