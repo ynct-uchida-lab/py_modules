@@ -11,6 +11,13 @@ def lpf(x, samplerate, fp, fs, gpass, gstop):
     b, a = signal.butter(N, Wn, "band")           #フィルタ伝達関数の分子と分母を計算
     data_lpf = signal.filtfilt(b, a, x)           #信号に対してフィルタをかける
     return data_lpf                               #フィルタ後の信号を返す
+
+#データを高速フーリエ変換する関数
+def fft(data):
+    data_fft=np.fft.fft(data)
+    # 振幅を求めるためにfftされたデータを正規化
+    spectrum = np.abs(data_fft)
+    return  spectrum
     
 def main():
     samplerate = 25600                                   #波形のサンプリングレート
@@ -25,13 +32,29 @@ def main():
     gpass = 1                      #通過域端最大損失[dB]
     gstop = 40                     #阻止域端最小損失[dB]
     
-    
+    #データにローパスフィルタをかける
     data_lpf = lpf(data, samplerate, fp, fs, gpass, gstop)
+    #データを高速フーリエ変換する
+    data_fft = fft(data)
+    #ローパスフィルタがかけられたデータを高速フーリエ変換する
+    data_lpf_fft = fft(data_lpf)
     
-    plt.subplot(2,1,1)
+    plt.subplots_adjust(hspace=1.0)
+    
+    plt.subplot(3,1,1)
     plt.plot(t,data,label="original")
     plt.plot(t,data_lpf,label="filter")
+    plt.title("data",y=-0.7)
     plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=0, fontsize=8)
+    
+    plt.subplot(3,1,2)
+    plt.plot(data_fft,label="original")
+    plt.plot(data_lpf_fft,label="filter")
+    plt.title("spectrum",y=-0.7)
+    plt.xlim(0,12800)
+    
+    plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=0, fontsize=8)
+    
     plt.show()
     
 if  __name__  ==  "__main__":
