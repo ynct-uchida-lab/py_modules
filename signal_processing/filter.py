@@ -1,6 +1,7 @@
 ﻿import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
+from fft import fft              #fft.pyのfft関数を呼び出す
 
 #データにローパスフィルタ(バターワースフィルタ）をかける関数
 def lpf(x, samplerate, fp, fs, gpass, gstop):
@@ -12,20 +13,13 @@ def lpf(x, samplerate, fp, fs, gpass, gstop):
     data_lpf = signal.filtfilt(b, a, x)           #信号に対してフィルタをかける
     return data_lpf                               #フィルタ後の信号を返す
 
-#データを高速フーリエ変換する関数
-def fft(data):
-    data_fft=np.fft.fft(data)
-    # 振幅を求めるためにfftされたデータを正規化
-    spectrum = np.abs(data_fft)
-    return  spectrum
-    
 def main():
     samplerate = 25600                                   #波形のサンプリングレート
     x = np.arange(0, 25600) / samplerate                 #波形生成のための時間軸の作成
     data = np.random.normal(loc=0, scale=1, size=len(x)) #ガウシアンノイズを生成
 
-    dt=1/samplerate
-    t=np.arange(0,samplerate*dt,dt)
+    dt=1/samplerate                               #サンプリング間隔
+    t=np.arange(0,samplerate*dt,dt)               #時間軸
  
     fp = np.array([1000,3000])     #通過域端周波数[Hz]
     fs = np.array([500,600])       #阻止域端周波数[Hz]
