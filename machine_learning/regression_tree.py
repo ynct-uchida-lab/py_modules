@@ -48,9 +48,9 @@ def main():
                         help = "tree depth (default = 3)",
                         type = int, 
                         default = 3)
-    parser.add_argument("-v", "--visualization", 
-                        help = "T/F output as png. (T:'-v', F:defo)", 
-                        action = "store_true")
+    parser.add_argument("-nv", "--visualization", 
+                        help = "T/F show tree. (T:defo, F:'-nv')", 
+                        action = "store_false")
     args = parser.parse_args()
 
     max_depth = args.max_depth #決定木の深さ
