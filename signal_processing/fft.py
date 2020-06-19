@@ -13,12 +13,11 @@ def main():
     # サンプルデータの作成
     dt = 0.01 # サンプリング周波数
     tm = 1 # データの収録時間
-    N = tm / dt # サンプル数
     f1, f2 = 5, 8 # 周波数
-    A1, A2 = 5, 4 # 振幅
+    a1, a2 = 5, 4 # 信号の振幅
 
     t = np.arange(0, tm, dt) # 時間
-    data = A1*np.sin(2*np.pi*f1*t) + A2*np.sin(2*np.pi*f2*t) # サンプルデータ
+    data = a1*np.sin(2*np.pi*f1*t) + a2*np.sin(2*np.pi*f2*t) # サンプルデータ
     freq = np.fft.fftfreq(len(data), dt) # 周波数
     freq = freq[:int (len(freq)/2)]
     
@@ -38,7 +37,6 @@ def main():
     plt.ylabel("amplitude")
 
     plt.tight_layout()
-    plt.savefig("01")
     
     plt.show()
 
