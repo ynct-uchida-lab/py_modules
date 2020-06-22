@@ -3,13 +3,13 @@ from scipy import signal
 import matplotlib.pyplot as plt
 from fft import fft              #fft.pyのfft関数を呼び出す
 
-#データにローパスフィルタ(バターワースフィルタ）をかける関数
-def lpf(x, samplerate, fp, fs, gpass, gstop):
+#データにbtypeに応じたフィルタをかける関数
+def butterworth(x, samplerate, fp, fs, gpass, gstop, btype):
     fn = samplerate / 2                           #ナイキスト周波数
     wp = fp / fn                                  #ナイキスト周波数で通過域端周波数を正規化
     ws = fs / fn                                  #ナイキスト周波数で阻止域端周波数を正規化
     N, Wn = signal.buttord(wp, ws, gpass, gstop)  #オーダーとバターワースの正規化周波数を計算
-    b, a = signal.butter(N, Wn, "low")            #フィルタ伝達関数の分子と分母を計算
+    b, a = signal.butter(N, Wn, btype)            #フィルタ伝達関数の分子と分母を計算
     data_lpf = signal.filtfilt(b, a, x)           #信号に対してフィルタをかける
     return data_lpf                               #フィルタ後の信号を返す
 
@@ -27,23 +27,30 @@ def main():
     gstop = 40                     #阻止域端最小損失[dB]
     
     #データにローパスフィルタをかける
-    data_lpf = lpf(data, samplerate, fp, fs, gpass, gstop)
+    data_lpf = butterworth(data, samplerate, fp, fs, gpass, gstop, 'low')
+    #データにハイパスフィルタをかける
+    data_hpf = butterworth(data, samplerate, fp, fs, gpass, gstop, 'high')
+    
     #データを高速フーリエ変換する
     data_fft = fft(data)
     #ローパスフィルタがかけられたデータを高速フーリエ変換する
     data_lpf_fft = fft(data_lpf)
+    #ハイパスフィルタがかけられたデータを高速フーリエ変換する
+    data_hpf_fft = fft(data_hpf)
     
     plt.subplots_adjust(hspace=1.0)
     
     plt.subplot(3,1,1)
     plt.plot(t,data,label="original")
-    plt.plot(t,data_lpf,label="filter")
+    plt.plot(t,data_lpf,label="filter_low")
+    plt.plot(t,data_hpf,label="filter_high")
     plt.title("data",y=-0.7)
     plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=0, fontsize=8)
     
     plt.subplot(3,1,2)
     plt.plot(data_fft,label="original")
-    plt.plot(data_lpf_fft,label="filter")
+    plt.plot(data_lpf_fft,label="filter_low")
+    plt.plot(data_hpf_fft,label="filter_high")
     plt.title("spectrum",y=-0.7)
     plt.xlim(0,12800)
     
