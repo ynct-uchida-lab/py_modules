@@ -23,8 +23,8 @@ def main():
  
     fp = 3000                                     #通過域端周波数[Hz]
     fs = 6000                                     #阻止域端周波数[Hz]
-    gpass = 3                      #通過域端最大損失[dB]
-    gstop = 40                     #阻止域端最小損失[dB]
+    gpass = 3                                     #通過域端最大損失[dB]
+    gstop = 40                                    #阻止域端最小損失[dB]
     
     #データにローパスフィルタをかける
     data_lpf = butterworth(data, samplerate, fp, fs, gpass, gstop, 'low')
