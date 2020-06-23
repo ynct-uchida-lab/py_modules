@@ -5,36 +5,35 @@ import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn import svm
 
-#SVMクラス
+# SVMクラス
+#    kernel: カーネル
+#    gamma: 境界の複雑さ
+#    degree: カーネル多項式の度合
 class SVM():
     def __init__(self, c=1, kernel='rbf', gamma=0.1, degree=3):
-        self._c = c
-        self._kernel = kernel #カーネル
-        self._gamma = gamma #境界の複雑さ
-        self._degree = degree #カーネル多項式の度合
+        print(f"kernel : {kernel}")
+        self.clf = svm.SVC(C=c,
+                           kernel=kernel,
+                           gamma=gamma, 
+                           degree=degree)
 
-        print(f"kernel : {self._kernel}")
-
-        self.clf = svm.SVC(C = self._c,
-                               kernel = self._kernel,
-                               gamma = self._gamma, 
-                               degree = self._degree)
-
-    #予測
+    # 予測
     def __call__(self, test_data):
         predict_data = self.clf.predict(test_data)
         return predict_data
 
-    #学習
+    # 学習
     def training(self, train_data, train_target):
         self.clf.fit(train_data, train_target)
 
-
 def main():
-    #パラメータ
+    # -------------------------------------
+    # init setting
+    # -------------------------------------
+
+    # パラメータ
     parser = argparse.ArgumentParser(description = 
                                      "SVM using iris_dataset as an exam")
-
     parser.add_argument("-c", "--c",
                         help = "param C", 
                         type = float, 
@@ -58,45 +57,54 @@ def main():
     gamma = args.gamma
     degree = args.degree 
 
-    #irisデータセットを読み込む
+    # -------------------------------------
+    # dataset
+    # -------------------------------------
+    # irisデータセットを読み込む
     iris = datasets.load_iris()
-
-    data = iris.data[:, 0:2] #特徴量を2つに絞る
+    # データは特徴量を2つに絞る
+    data = iris.data[:, 0:2]
+    # 教師データ
     target = iris.target
 
-    #SVM分析
-    #SVMクラスのインスタンスを作成
+    # -------------------------------------
+    # train
+    # -------------------------------------
+    # SVMクラスのインスタンスを作成
     clf = SVM(c, kernel, gamma, degree)
-    #SVMの学習
+    # SVMの学習
     clf.training(data, target)
 
-    #plot用にdataを分割
+    # plot用にdataを分割
     x = data[:, 0]
     y = data[:, 1]
-    
-    #meshを作成
+    # meshを作成
     x_min, x_max = x.min() - .5, x.max() + .5
     y_min, y_max = y.min() - .5, y.max() + .5
     x_mesh, y_mesh = np.meshgrid(np.arange(x_min, x_max, 0.05),
                                  np.arange(y_min, y_max, 0.05))
-                            
-    #__call__
+
+    # 学習済みモデルによる予測
     z = clf(np.c_[x_mesh.ravel(), y_mesh.ravel()])
     z = z.reshape(x_mesh.shape)
+
+    # -------------------------------------
+    # plot
+    # -------------------------------------
     
-    #plotの時に色づけするためのカラーマップ
+    # plotの時に色づけするためのカラーマップ
     color = ['k', 'g', 'r']
     color_list = [color[i] for i in target]
 
-    plt.figure(figsize = (4, 4))
-    #散布図を描画
+    # figureを作成
+    plt.figure()
+    # 散布図を描画
     plt.scatter(x, y, color = color_list)
-
-    #境界線の描画
+    # 境界線の描画
     plt.contourf(x_mesh, y_mesh, z, cmap=plt.cm.bone, alpha=0.4)
-    #titleを表示
+    # titleを表示
     plt.title(f'{kernel}-SVC')
-
+    # 表示
     plt.show()
 
 if __name__=='__main__':
