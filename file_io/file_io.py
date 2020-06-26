@@ -27,7 +27,7 @@ def csv_reader(path, enc='utf-8', enc_check_enable=False):
         enc = check_encoding(path)
     
     with open(path, encoding=enc) as f:
-        reader = csv.reader(f, delimiter = ',')
+        reader = csv.reader(f, delimiter=',')
         data = [row for row in reader]
     return data
 
@@ -39,7 +39,6 @@ def csv_reader_codecs(path):
         data = [row for row in reader]
     return data
 
-
 # リストを書き込み
 def csv_writer(path, data):
     with open(path, 'w') as f:
@@ -49,19 +48,19 @@ def csv_writer(path, data):
 # 指定列のみ抜き出す
 #   col: 指定列(0スタート)
 #   skip: ヘッダーなどある場合に飛ばす行数を指定
-def list2data(data_list, col, skip = 0):
+def list2data(data_list, col, skip=0):
     return [data_list[i + skip][col] for i in range(len(data_list) - skip)]
 
 # *********************************
 # numpyによるcsv読み込み
 # *********************************
-#
+
 # 文字列として読み込む
 def csv_reader_np(path):
-    data = np.loadtxt(path, delimiter = ",", dtype = "unicode")
+    data = np.loadtxt(path, delimiter=",", dtype="unicode")
     return data
 
 # 文字列として書き込む
 def csv_writer_np(path, data):
-    np.savetxt(path, data, delimiter = ",", fmt = "%s")
+    np.savetxt(path, data, delimiter=",", fmt="%s")
 
