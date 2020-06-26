@@ -33,7 +33,7 @@ def tdms_info(tdms_file):
     channel_name = tdms_file.group_channels(group_name[0])
     # channel_name = []
     # for g in group_name:
-        # channel_name.append(tdms_file.group_channels(g))
+    #     channel_name.append(tdms_file.group_channels(g))
     
     return group_name, channel_name
 
@@ -59,10 +59,10 @@ def tdms_to_np(tdms_name, time_req=False):
 
 # 同一フィオルダ内の複数のTDMSファイルを合わせて送り返す
 def all_tdms_to_np(folder,
-        time_req=False, 
-        start_index=None, max_index=None,
-        min_size=None,
-        zero_padding=False, data_length=None):
+                   time_req=False, 
+                   start_index=None, max_index=None,
+                   min_size=None,
+                   zero_padding=False, data_length=None):
 
     # フォルダ内のtdmsを検索する
     file_name = glob.glob(folder + '/*.tdms')
@@ -93,7 +93,7 @@ def all_tdms_to_np(folder,
             # ファイルサイズの取得
             file_size = os.path.getsize(tdms_name)
             if file_size < int(min_size):
-                print('file size error: ', int(i+1))
+                print('file size error: ', int(i + 1))
                 delete_index.append(i)
                 continue
 
@@ -118,7 +118,7 @@ def all_tdms_to_np(folder,
     # 長さがそれぞれ異なる場合は0埋めする
     if zero_padding:
         l = max(map(len, data))
-        data = [np.concatenate([d, np.zeros(data_length-len(d),)]) for d in data]
+        data = [np.concatenate([d, np.zeros(data_length - len(d),)]) for d in data]
 
     # numpyに変換
     data = np.array(data, dtype='float32')
