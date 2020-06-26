@@ -3,15 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Adaptive Filter: NLMS algorithm
+# inputs
+#   d: Desired response
+#   x: Input data
+#   n: Filter length
+#   mu: step size
+# output
+#   s: output data(signal)
 def nlms(d, x, n, mu):
-    # inputs
-    #   d: Desired response
-    #   x: Input data
-    #   n: Filter length
-    #   mu: step size
-    # output
-    #   s: output data(signal)
-
+    
     # -------------------------------------
     # init
     # -------------------------------------
@@ -65,7 +65,7 @@ def main():
     noise_filtered = signal.filtfilt(b, a, noise)
 
     # sample data
-    data = np.sin(2*np.pi*5*time) + noise_filtered
+    data = np.sin(2 * np.pi * 5 * time) + noise_filtered
 
     # -------------------------------------
     # adaptive filter
@@ -73,9 +73,9 @@ def main():
     # denoising
     signal = nlms(data, noise, 64, 0.1)
 
-    # **********************************************
+    # -------------------------------------
     # plot
-    # **********************************************
+    # -------------------------------------
     plt.plot(data)
     plt.plot(signal)
     plt.show()
