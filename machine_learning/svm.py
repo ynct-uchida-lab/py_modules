@@ -1,4 +1,4 @@
-#import 
+# import 
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,28 +44,28 @@ def main():
     # init setting
     # -------------------------------------
     # パラメータ
-    parser = argparse.ArgumentParser(description = 
+    parser = argparse.ArgumentParser(description=
                                      "SVM using iris_dataset as an exam")
     parser.add_argument("-c", "--c",
-                        help = "param C", 
-                        type = float, 
-                        default = 1)
+                        help="param C", 
+                        type=float, 
+                        default=1)
     parser.add_argument("-k", "--kernel", 
-                        help = "param kernel(linear, poly, rbf or sigmoid)", 
-                        type = str, 
+                        help="param kernel(linear, poly, rbf or sigmoid)", 
+                        type=str, 
                         default = 'rbf')
     parser.add_argument("-g", "--gamma", 
-                        help = "param gamma, not need linear", 
-                        type = float, 
-                        default = 0.1)
+                        help="param gamma, not need linear", 
+                        type=float, 
+                        default=0.1)
     parser.add_argument("-d", "--degree", 
-                        help = "param degree, only use poly", 
-                        type = int, 
-                        default = 3)
+                        help="param degree, only use poly", 
+                        type=int, 
+                        default=3)
     parser.add_argument("-n", "--nu",
-                        help = "param nu", 
-                        type = float, 
-                        default = 0.1)
+                        help="param nu", 
+                        type=float, 
+                        default=0.1)
     args = parser.parse_args()
 
     c = args.c 
@@ -133,12 +133,12 @@ def main():
         # figureを作成
         plt.figure()
         # 散布図を描画
-        plt.scatter(x, y, color = color_list)
+        plt.scatter(x, y, color=color_list)
         # 境界線の描画
         plt.contourf(x_mesh, y_mesh, z, cmap=plt.cm.bone, alpha=0.4)
         # 表示
         plt.show()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
 
