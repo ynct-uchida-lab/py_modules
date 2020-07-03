@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
+import random
 
 
 # linear Regression クラス
@@ -31,6 +32,11 @@ class RegressionAnalysis():
         # 線形回帰モデル
         self.model = LinearRegression()
 
+    # 予測
+    def __call__(self, test_data):
+        predict_data = self.model.predict(test_data)
+        return predict_data
+
     # 学習
     def training(self):
         self.model.fit(self.X_train, self.y_train)
@@ -52,7 +58,8 @@ def main():
 
     parser.add_argument("-mx", "--X_features",
                         help="feature for predition(df = 13 features)\
-                                \n※how2discribe: -mx hoge -mx fuga",
+                                \n※how2discrib: -mx hoge -mx fuga\
+                                \nChoose from CRIM, ZN, INDUS, CHAS, NOX, RM, AGE, DIS, RAD, TAX, PTRATIO, B, LSTAT",
                         action='append',
                         default=['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT'])
     parser.add_argument("-x", "--X_feature",
@@ -79,26 +86,49 @@ def main():
     boston_dataframe = pd.DataFrame(boston.data, columns=boston.feature_names)
     boston_dataframe['PRICE'] = boston.target  # PRICE(住宅価格)を追加
 
-    for i in range(2):
-        if i == 0:
-            # 単回帰分析->メソッド
-            print('単回帰分析-----------------------')
+    # 目的変数にPRICEを指定
+    y_feature = 'PRICE'
 
+    # テストデータをサンプルとしてランダムに抽出するための乱数
+    rand = random.randrange(len(boston_dataframe))
+
+    for i in range(2):
+        # 単回帰分析->メソッド
+        if i == 0:
+            print('単回帰分析-----------------------')
+            # 予測用test_data
+            test_data = [boston_dataframe.loc[rand, X_feature]]
+
+        # 重回帰分析->メソッド
         else:
-            # 重回帰分析->メソッド
             print('\n重回帰分析-----------------------')
             X_feature = X_features
+
+            # 予測用test_dataリストを作成
+            for x in range(len(X_feature)):
+                each_data = boston_dataframe.loc[rand, X_feature[x]]
+                test_data.append(each_data)
 
         model = RegressionAnalysis(boston_dataframe,
                                    X_feature,
                                    y_feature='PRICE',
                                    test_size=test_size)
+
+        # 学習
         model.training()
 
-        # scoreで評価->メソッド
+        # 予測
+        pred = model([test_data])
+
+        # scoreで評価->メソッド, 予測結果の表示
         train_score, test_score = model.score()
-        print(f"学習データ   : {train_score}\
-                \nテストデータ : {test_score}")
+        print(f"学習スコア   : {train_score}\
+                \nテストスコア : {test_score}\
+                \n\ntest_data    : {test_data}\
+                \n予測結果     : {pred} <---> correct : {boston_dataframe.loc[rand, y_feature]}")  # 正解データと比較
+
+        # 予測用test_dataの要素を全消去(単回帰で用いたtest_dataを捨てる)
+        test_data.clear()
 
 
 if __name__ == '__main__':
