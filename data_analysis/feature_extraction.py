@@ -3,7 +3,7 @@
 # データの最大値, 最小値, 平均値, 実効値を求める関数
 def time_series(data):
     # 実効値を求める
-    data_rms = np.sqrt(np.mean(data*data))
+    data_rms = np.sqrt(np.mean(data * data))
     # データの絶対値をとり最大値, 最小値, 平均値を求める
     data = np.abs(data)
     data_max = np.max(data)
@@ -22,5 +22,5 @@ def main():
     # データの最大値, 最小値, 平均値, 実効値を表示する
     print(time_series(data))
 
-if  __name__  ==  "__main__":
+if __name__ == "__main__":
     main()
