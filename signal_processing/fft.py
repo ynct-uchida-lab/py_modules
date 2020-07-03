@@ -16,10 +16,10 @@ def main():
     f1, f2 = 5, 8  # 周波数
     a1, a2 = 5, 4  # 信号の振幅
 
-    t = np.arange(0, tm, dt)                                                # 時間
-    data = a1*np.sin(2 * np.pi * f1 * t) + a2 * np.sin(2 * np.pi * f2 * t)  # サンプルデータ
-    freq = np.fft.fftfreq(len(data), dt)                                    # 周波数
-    freq = freq[:int (len(freq) / 2)]
+    t = np.arange(0, tm, dt)                                                  # 時間
+    data = a1 * np.sin(2 * np.pi * f1 * t) + a2 * np.sin(2 * np.pi * f2 * t)  # サンプルデータ
+    freq = np.fft.fftfreq(len(data), dt)                                      # 周波数
+    freq = freq[:int(len(freq) / 2)]
     
     # サンプルデータを高速フーリエ変換（FFT)
     spectrum = fft(data)
