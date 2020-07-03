@@ -44,13 +44,13 @@ def main():
     plt.plot(t, data_lpf, label="filter_low")
     plt.title("original lpf", y=-0.4)
     
-    plt.subplot( 2, 2, 3)
+    plt.subplot(2, 2, 3)
     plt.plot(data_fft, label="original")
     plt.plot(data_lpf_fft, label="filter_low")
     plt.title("spectrum lpf", y=-0.4)
     
     plt.subplot(2, 2, 2)
-    plt.plot(t, data,label="original")
+    plt.plot(t, data, label="original")
     plt.plot(t, data_hpf, label="filter_high")
     plt.title("original hpf", y=-0.4)
     
