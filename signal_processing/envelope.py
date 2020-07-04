@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 def envelope(data):
     # データをヒルベルト変換する
     data_hlb = signal.hilbert(data)
-    #ヒルベルト変換したデータの絶対値をとり、エンベロープ波形を求める
+    # ヒルベルト変換したデータの絶対値をとり、エンベロープ波形を求める
     data_evl = np.abs(data_hlb)
     return data_evl
 
@@ -29,5 +29,5 @@ def main():
     plt.legend()
     plt.show()
 
-if  __name__  ==  "__main__":
+if __name__ == "__main__":
     main()
