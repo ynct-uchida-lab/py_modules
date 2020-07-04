@@ -44,8 +44,8 @@ def main():
     # init setting
     # -------------------------------------
     # パラメータ
-    parser = argparse.ArgumentParser(description=
-                                     "SVM using iris_dataset as an exam")
+    parser = argparse.ArgumentParser(
+            description="SVM using iris_dataset as an exam")
     parser.add_argument("-c", "--c",
                         help="param C", 
                         type=float, 
@@ -53,7 +53,7 @@ def main():
     parser.add_argument("-k", "--kernel", 
                         help="param kernel(linear, poly, rbf or sigmoid)", 
                         type=str, 
-                        default = 'rbf')
+                        default='rbf')
     parser.add_argument("-g", "--gamma", 
                         help="param gamma, not need linear", 
                         type=float, 
