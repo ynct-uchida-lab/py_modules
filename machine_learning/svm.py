@@ -44,8 +44,7 @@ def main():
     # init setting
     # -------------------------------------
     # パラメータ
-    parser = argparse.ArgumentParser(
-            description="SVM using iris_dataset as an exam")
+    parser = argparse.ArgumentParser(description="SVM using iris_dataset as an exam")
     parser.add_argument("-c", "--c",
                         help="param C", 
                         type=float, 
