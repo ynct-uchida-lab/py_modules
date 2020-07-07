@@ -9,25 +9,7 @@ import random
 
 # linear Regression クラス
 class RegressionAnalysis():
-    def __init__(self, dataframe, X_feature, y_feature='PRICE', test_size=0.3):
-        # データを分割
-        train, test = train_test_split(dataframe,
-                                       test_size=test_size,
-                                       random_state=0)
-
-        # route simple linear reg
-        if type(X_feature) is str:
-            self.X_train = train[X_feature].values.reshape(-1, 1)
-            self.y_train = train[y_feature]
-            self.X_test = test[X_feature].values.reshape(-1, 1)
-            self.y_test = test[y_feature]
-
-        # route multiple linear reg
-        else:
-            self.X_train = train[X_feature]
-            self.y_train = train[y_feature]
-            self.X_test = test[X_feature]
-            self.y_test = test[y_feature]
+    def __init__(self):
 
         # 線形回帰モデル
         self.model = LinearRegression()
@@ -38,15 +20,37 @@ class RegressionAnalysis():
         return predict_data
 
     # 学習
-    def training(self):
-        self.model.fit(self.X_train, self.y_train)
+    def training(self, X_train, y_train):  # , X_test, y_test):
+        self.model.fit(X_train, y_train)
 
     # scoreで評価
-    def score(self):
-        train_score = self.model.score(self.X_train, self.y_train)
-        test_score = self.model.score(self.X_test, self.y_test)
+    def score(self, predict, teach):
+        score = self.model.score(predict, teach)
+        return score
 
-        return train_score, test_score
+
+# データ分割関数
+def data_split(dataframe, X_feature, y_feature, test_size=0.3):
+    # データを分割
+    train, test = train_test_split(dataframe,
+                                   test_size=test_size,
+                                   random_state=0)
+
+    # route simple linear reg
+    if type(X_feature) is str:
+        X_train = train[X_feature].values.reshape(-1, 1)
+        y_train = train[y_feature]
+        X_test = test[X_feature].values.reshape(-1, 1)
+        y_test = test[y_feature]
+
+    # route multiple linear reg
+    else:
+        X_train = train[X_feature]
+        y_train = train[y_feature]
+        X_test = test[X_feature]
+        y_test = test[y_feature]
+
+    return X_train, y_train, X_test, y_test
 
 
 def main():
@@ -109,21 +113,21 @@ def main():
                 each_data = boston_dataframe.loc[rand, X_feature[x]]
                 test_data.append(each_data)
 
-        model = RegressionAnalysis(boston_dataframe,
-                                   X_feature,
-                                   y_feature='PRICE',
-                                   test_size=test_size)
+        # データを分割 -> data_split関数
+        X_train, y_train, X_test, y_test = data_split(
+            boston_dataframe, X_feature, y_feature='PRICE', test_size=test_size)
+
+        model = RegressionAnalysis()
 
         # 学習
-        model.training()
+        model.training(X_train, y_train)
 
         # 予測
         pred = model([test_data])
 
         # scoreで評価->メソッド, 予測結果の表示
-        train_score, test_score = model.score()
-        print(f"学習スコア   : {train_score}\
-                \nテストスコア : {test_score}\
+        print(f"学習スコア   : {model.score(X_train, y_train)}\
+                \nテストスコア : {model.score(X_test, y_test)}\
                 \n\ntest_data    : {test_data}\
                 \n予測結果     : {pred} <---> correct : {boston_dataframe.loc[rand, y_feature]}")  # 正解データと比較
 
