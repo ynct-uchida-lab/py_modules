@@ -16,7 +16,7 @@ def powerspectrum(data, fs, type):
     
     # typeによってパワーを変更する
     if (type == "dB"):
-        return freq, 10*np.log10(P)
+        return freq, 10 * np.log10(P)
     else:
         return freq, P
 def main():
