@@ -12,7 +12,7 @@ def fft(data):
 
 # データのパワースペクトルを求める関数
 def powerspectrum(data, fs, type):
-    freq, P =  signal.periodogram(data, fs)
+    freq, P = signal.periodogram(data, fs)
     
     # typeによってパワーを変更する
     if (type == "dB"):
@@ -40,7 +40,7 @@ def main():
     freq_P_dB, P_dB = powerspectrum(data, fs, "dB")
 
     # グラフをプロットする
-    plt.subplots_adjust(wspace=0.4,hspace=1.0)
+    plt.subplots_adjust(wspace=0.4, hspace=1.0)
 
     plt.subplot(321)
     plt.plot(t, data)
