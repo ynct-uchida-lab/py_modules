@@ -24,9 +24,8 @@ def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
 
     overlap = int(fft_size / (100 / overlap_rate))
     frequency_bin, time_bin, spectrogram = signal.stft(
-                                data, fs=fs, nperseg=fft_size, \
-                                noverlap=overlap,
-                                detrend='linear', boundary=None)
+        data, fs=fs, nperseg=fft_size, noverlap=overlap,
+        detrend='linear', boundary=None)
 
     spectrogram = np.abs(spectrogram)
     power = np.mean(spectrogram, axis=-1)
