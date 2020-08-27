@@ -4,10 +4,15 @@ from scipy import signal
 
 # データを高速フーリエ変換しスペクトルを算出
 def fft(data, dtype=None):
+
+    # FFT
     data_fft = np.fft.fft(data)
     # 振幅を求めるために高速フーリエ変換されたデータを正規化
     spectrum = np.abs(data_fft)
-    spectrum = spectrum[:int(len(spectrum) / 2)]
+    
+    # 折り返し分を削除
+    fft_data_len = int(len(spectrum) / 2)
+    spectrum = spectrum[:fft_data_len]
 
     return spectrum
 
