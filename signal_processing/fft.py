@@ -21,7 +21,7 @@ def frequency_bin(data_len, dt):
     return freq[:int(len(freq) / 2)]
 
 # STFTと平均パワースペクトルの算出
-def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
+def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None, last_sample_del=True):
 
     # shapeを2次元にする
     if len(data.shape) == 1:
@@ -43,6 +43,12 @@ def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
     # dBへ変換
     if dtype == 'power':
         power = 20 * np.log10(power)
+    
+    # 最後のポイントを削除(numpyに大きさを合わせる)
+    if last_sample_del:
+        frequency_bin = frequency_bin[:-1]
+        spectrogram = spectrogram[:, :-1, :]
+        power = power[:, :-1]
 
     return frequency_bin, time_bin, spectrogram, power
 
