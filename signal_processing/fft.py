@@ -6,13 +6,20 @@ from scipy import signal
 def fft(data, dtype=None):
 
     # FFT
-    data_fft = np.fft.fft(data)
+    if len(data.shape) == 1:
+        data_fft = np.fft.fft(data)
+    else:
+        data_fft = np.fft.fft(data, axis=1)
+
     # 振幅を求めるために高速フーリエ変換されたデータを正規化
     spectrum = np.abs(data_fft)
     
-    # 折り返し分を削除
-    fft_data_len = int(len(spectrum) / 2)
-    spectrum = spectrum[:fft_data_len]
+    # 折り返し分は削除
+    fft_data_len = int(spectrum.shape[-1] / 2)
+    if len(data.shape) == 1:
+        spectrum = spectrum[0:fft_data_len]
+    else:
+        spectrum = spectrum[:, 0:fft_data_len]
 
     return spectrum
 
