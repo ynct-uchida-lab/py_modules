@@ -21,23 +21,35 @@ def frequency_bin(data_len, dt):
     return freq[:int(len(freq) / 2)]
 
 # STFTと平均パワースペクトルの算出
-def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
+def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None, last_sample_del=True):
 
     # shapeを2次元にする
     if len(data.shape) == 1:
         data = data.reshape(1, data.shape[0])
-
+    
+    # オーバーラップ率からオーバーラップ点数を計算
     overlap = int(fft_size / (100 / overlap_rate))
+    # STFT
     frequency_bin, time_bin, spectrogram = signal.stft(
         data, fs=fs, nperseg=fft_size, noverlap=overlap,
         detrend='linear', boundary=None)
 
+    # パワーに変換
     spectrogram = np.abs(spectrogram)
+
+    # 平均パワースペクトルを求める
     power = np.mean(spectrogram, axis=-1)
-    # パワースペクトルへの変換
+
+    # dBへ変換
     if dtype == 'power':
         power = 20 * np.log10(power)
     
+    # 最後のポイントを削除(numpyに大きさを合わせる)
+    if last_sample_del:
+        frequency_bin = frequency_bin[:-1]
+        spectrogram = spectrogram[:, :-1, :]
+        power = power[:, :-1]
+
     return frequency_bin, time_bin, spectrogram, power
 
 def main():
