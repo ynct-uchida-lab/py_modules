@@ -26,18 +26,24 @@ def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
     # shapeを2次元にする
     if len(data.shape) == 1:
         data = data.reshape(1, data.shape[0])
-
+    
+    # オーバーラップ率からオーバーラップ点数を計算
     overlap = int(fft_size / (100 / overlap_rate))
+    # STFT
     frequency_bin, time_bin, spectrogram = signal.stft(
         data, fs=fs, nperseg=fft_size, noverlap=overlap,
         detrend='linear', boundary=None)
 
+    # パワーに変換
     spectrogram = np.abs(spectrogram)
+
+    # 平均パワースペクトルを求める
     power = np.mean(spectrogram, axis=-1)
-    # パワースペクトルへの変換
+
+    # dBへ変換
     if dtype == 'power':
         power = 20 * np.log10(power)
-    
+
     return frequency_bin, time_bin, spectrogram, power
 
 def main():
