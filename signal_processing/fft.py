@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 from scipy import signal
 
-# データを高速フーリエ変換しスペクトルを求める関数
+# データを高速フーリエ変換しスペクトルを算出
 def fft(data, dtype=None):
     data_fft = np.fft.fft(data)
     # 振幅を求めるために高速フーリエ変換されたデータを正規化
@@ -14,6 +14,11 @@ def fft(data, dtype=None):
 # 単位を'dB'に変換
 def amp_to_db(spectrum):
     return 20 * np.log10(spectrum)
+
+# 周波数ビンを計算して返す
+def frequency_bin(data_len, dt):
+    freq = np.fft.fftfreq(data_len, dt)
+    return freq[:int(len(freq) / 2)]
 
 # STFTと平均パワースペクトルの算出
 def spectrogram_by_stft(data, fft_size, fs, overlap_rate=50, dtype=None):
@@ -48,8 +53,7 @@ def main():
     # サンプルデータ
     data = a1 * np.sin(2 * np.pi * f1 * t) + a2 * np.sin(2 * np.pi * f2 * t)
     # 周波数
-    freq = np.fft.fftfreq(len(data), dt)
-    freq = freq[:int(len(freq) / 2)]
+    freq = frequency_bin(len(data), dt)
     
     # サンプルデータを高速フーリエ変換（FFT)
     spectrum = fft(data)
