@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 def nlms(d, x, n, mu):
     
     # -------------------------------------
-    # init
+    # 初期化
     # -------------------------------------
     # phi: The vector of buffered input data at step i
     phi = np.zeros(n)
@@ -22,7 +22,7 @@ def nlms(d, x, n, mu):
     # output data
     s = np.zeros(len(x))
     
-    # Filterring
+    # フィルタリング
     for i, x_i in enumerate(x):
         # buffering
         phi[1:] = phi[0:-1]
@@ -39,47 +39,53 @@ def nlms(d, x, n, mu):
 
     return s
 
-def main():
+# **********************************************
+# 適応フィルタによるノイズ除去のサンプル
+# **********************************************
+def denoising_sample():
+    from scipy import signal
 
     # -------------------------------------
-    # parameter setting
+    # パラメータの設定
     # -------------------------------------
-    # time max
-    time_max = 1
-    # time step (sampling rate)
+    # 時間の最大値
+    max_time = 1
+    # 時間幅(サンプリングレート)
     dt = 0.001
 
     # -------------------------------------
-    # create sample data
+    # 信号の生成
     # -------------------------------------
-    # time step
-    time = np.arange(0, time_max, dt)
-    # noise
-    noise = 0.3 * np.random.randn(len(time))
+    # 時間のリスト
+    time_array = np.arange(0, max_time, dt)
 
-    # lpf
-    from scipy import signal
+    # ノイズ
+    noise = 0.3 * np.random.randn(len(time_array))
+
+    # ノイズにLPFを適用
     fn = 1 / (dt * 2)
-    N, Wn = signal.buttord(300 / fn, 500 / fn, 1, 40)
-    b, a = signal.butter(N, Wn, "low")
+    n, wn = signal.buttord(300 / fn, 500 / fn, 1, 40)
+    b, a = signal.butter(n, wn, 'low')
     noise_filtered = signal.filtfilt(b, a, noise)
 
-    # sample data
-    data = np.sin(2 * np.pi * 5 * time) + noise_filtered
+    # サンプル信号の生成
+    data = np.sin(2 * np.pi * 5 * time_array) + 1.0 * noise_filtered
 
     # -------------------------------------
-    # adaptive filter
+    # 適応フィルタによるノイズ除去
     # -------------------------------------
-    # denoising
     signal = nlms(data, noise, 64, 0.1)
 
     # -------------------------------------
-    # plot
+    # 描画
     # -------------------------------------
     plt.plot(data)
     plt.plot(signal)
     plt.show()
 
+def main():
+    # サンプルコードの実行
+    denoising_sample()
+
 if __name__ == '__main__':
     main()
-
