@@ -57,10 +57,8 @@ def tdms_to_np(file_path, time_req=False):
     data = data[0, :]
 
     # 時間情報が必要であれば抜き出す(default: None)
-    #     TODO: 記法変更
+    #     TODO: 最新版に対応する
     time = None
-    # if time_req:
-        # time = channel.time_track()
     return data, time
 
 # 同一フィオルダ内の複数のTDMSファイルを合わせて送り返す
