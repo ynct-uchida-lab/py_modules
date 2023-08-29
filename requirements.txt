@@ -2,6 +2,6 @@ numpy
 matplotlib
 scipy
 pandas
-sklearn
+scikit-learn
 nptdms
-
+flake8
