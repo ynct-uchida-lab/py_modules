@@ -68,19 +68,24 @@ def denoising_sample():
     b, a = signal.butter(n, wn, 'low')
     noise_filtered = signal.filtfilt(b, a, noise)
 
-    # サンプル信号の生成
+    # データの生成
     data = np.sin(2 * np.pi * 5 * time_array) + 1.0 * noise_filtered
 
     # -------------------------------------
     # 適応フィルタによるノイズ除去
     # -------------------------------------
-    signal = nlms(data, noise, 64, 0.1)
+    denoising_data = nlms(data, noise, 64, 0.1)
 
     # -------------------------------------
     # 描画
     # -------------------------------------
-    plt.plot(data)
-    plt.plot(signal)
+    plt.plot(time_array, data, c='k', label='Input signal')
+    plt.plot(time_array, denoising_data, c='r', label='denoising signal')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Amplitude')
+    plt.xlim([0.0, max_time])
+    plt.ylim([-2.0, 2.0])
+    plt.legend()
     plt.show()
 
 def main():
