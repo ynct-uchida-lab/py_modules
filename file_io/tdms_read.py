@@ -1,16 +1,15 @@
-
 import os
 import glob
 import re
 import numpy as np
 from nptdms import TdmsFile
-from nptdms import TdmsObject
+# from nptdms import TdmsObject
 from nptdms import TdmsWriter, ChannelObject
 from scipy import signal
 from time import sleep
 
 # 自然順ソートを行う
-def numericalSort(value):
+def numerical_sort(value):
     numbers = re.compile(r'(\d+)')
     parts = numbers.split(value)
     parts[1::2] = map(int, parts[1::2])
@@ -21,62 +20,75 @@ def tdms_path_get(folder):
     # フォルダ内のtdmsを検索する
     file_paths = glob.glob(folder + '/**/*.tdms', recursive=True)
     # 自然順にソート
-    sorted_file_paths = sorted(file_paths, key=numericalSort)
+    sorted_file_paths = sorted(file_paths, key=numerical_sort)
 
     return sorted_file_paths
 
-# tdmsファイルのグループ名とチャンネル名を取得
+# TDMSファイルのグループ名とチャンネル名を取得
 def tdms_info(tdms_file):
     # グループ名をすべて取得
-    group_name = tdms_file.groups()
+    all_groups = tdms_file.groups()
+    # 先頭のグループを抜き出す
+    group = all_groups[0]
+
     # チャンネル名を取得
-    channel_name = tdms_file.group_channels(group_name[0])
-    # channel_name = []
+    all_group_channels = group.channels()
+    # 先頭のチャンネルを抜き出す
+    # channel = all_group_channels[0]
+
     # for g in group_name:
     #     channel_name.append(tdms_file.group_channels(g))
-    
-    return group_name, channel_name
 
-# tdmsを読み込み
-#   numpy arrayの形式で返す
-def tdms_to_np(tdms_name, time_req=False):
-    # tdmsを読み込み
-    tdms_file = TdmsFile(tdms_name)
+    return all_groups, all_group_channels
+
+# TDMSファイルを読み込みnumpy.ndarray形式で返す
+def tdms_to_np(file_path, time_req=False):
+    # ファイルパスからTDMSファイルを読み込み
+    tdms_file = TdmsFile.read(file_path)
     
     # チャンネルの情報を抜き出す
-    group_name, channel_name = tdms_info(tdms_file)
-    channel = tdms_file.object(group_name[0], channel_name[0].channel)
+    all_groups, all_group_channels = tdms_info(tdms_file)
+    # channel = tdms_file.object(group_name[0], channel_name[0].channel)
+    # channel = tdms_file[group[0]][channel[0]]
+    data = all_group_channels
 
-    # numpyに変換
-    data = channel.data.astype(np.float32)
+    # numpy.ndarrayに変換
+    data = np.array(data, dtype=np.float32)
+    data = data[0, :]
 
-    # 時間情報が必要であれば抜き出す
-    if time_req:
-        time = channel.time_track()
-        return data, time
-    else:
-        return data
+    # 時間情報が必要であれば抜き出す(default: None)
+    #     TODO: 記法変更
+    time = None
+    # if time_req:
+        # time = channel.time_track()
+    return data, time
 
 # 同一フィオルダ内の複数のTDMSファイルを合わせて送り返す
-def all_tdms_to_np(folder,
+#     time_req: TDMSに保存されている時間を取得するか(bool, default: False)
+#       TODO: 要修正
+#     start_index: ファイルの開始番号を指定(int, default: None)
+#     max_index: ファイルの終了番号を指定(int, default: None)
+#     min_size: 指定したサイズ以下のファイルを無視する(int,  default: None)
+#     zero_padding: データ長がファイルごとに違う場合0埋めを行う(bool, default: False)
+#     data_length: データを指定したインデックスまでにする(int, default: None)
+def all_tdms_to_np(tdms_dir,
                    time_req=False, 
                    start_index=None, max_index=None,
                    min_size=None,
                    zero_padding=False, data_length=None):
 
-    # フォルダ内のtdmsを検索する
-    file_name = glob.glob(folder + '/*.tdms')
+    # フォルダ内のTDMSファイルのパスを検索する
+    file_name = glob.glob(tdms_dir + '/*.tdms')
 
     # ファイル名のソート
     basename = [os.path.basename(file_name[i]) for i in range(len(file_name))]
-    file_name = sorted(basename, key=numericalSort)
-    # print(file_name)
+    file_name = sorted(basename, key=numerical_sort)
     
-    # データの開始インデックスの指定
+    # ファイルの開始インデックスの指定
     if start_index is None:
         start_index = 0
 
-    # データの終了インデックスの指定
+    # ファイルの終了インデックスの指定
     if max_index is None:
         max_index = len(file_name)
 
@@ -85,7 +97,7 @@ def all_tdms_to_np(folder,
     delete_index = []
     for i in range(start_index, max_index):
         
-        tdms_name = os.path.join(folder, file_name[i])
+        tdms_name = os.path.join(tdms_dir, file_name[i])
         print('\rFile name: ' + tdms_name)
 
         # ファイルサイズのチェック
@@ -98,15 +110,12 @@ def all_tdms_to_np(folder,
                 continue
 
         # 時間情報の読み取り
-        if time_req:
-            d, t = tdms_to_np(tdms_name) 
-            time.append(t)
-        else: 
-            d = tdms_to_np(tdms_name)
+        d, t = tdms_to_np(tdms_name, time_req=time_req) 
+        time.append(t)
 
-        # データ長を指定した長さに切る
+        # データを指定した長さに切る
         if data_length is not None:
-            d = d[0:data_length]
+            d = d[0: data_length]
 
         # リストにまとめる
         data.append(d)
@@ -120,14 +129,9 @@ def all_tdms_to_np(folder,
         l = max(map(len, data))
         data = [np.concatenate([d, np.zeros(data_length - len(d),)]) for d in data]
 
-    # numpyに変換
+    # numpy.ndarrayに変換
     data = np.array(data, dtype='float32')
+    time = np.array(time, dtype='float32')
 
-    # 時間情報があれば時間情報も返す
-    if time_req:
-        # numpyに変換
-        timeArr = np.array(time, dtype='float32')
-        return data, time
-    else:
-        return data
+    return data, time
 
