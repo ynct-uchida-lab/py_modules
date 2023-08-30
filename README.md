@@ -9,6 +9,7 @@ pythonでよく使う機能を関数やクラスにまとめたもの
 - python3
 
 - 必要に応じて各種モジュールが必要になる
+- 詳しくは[requirments.txt](https://github.com/ynct-uchida-lab/py_modules/blob/master/requirements.txt)を参照
     - numpy
     - matplotlib
     - nptdms
@@ -44,7 +45,6 @@ import os
 sys.path.append('../py_modules')
 ```
 
-
 - 例: "~/workspace"にあり，プロジェクトは別ディレクトリにある場合
     - 所定のディレクトリに存在する場合は絶対パスで追加すると便利
 
@@ -65,7 +65,13 @@ sys.path.append(os.path.join(workspace, 'py_modules'))
 import ploter.plt_format as plt_format
 ```
 
-<!-- ## Other -->
+## License 
 
+Copyright (c) 2020 ynct-uchida-lab
+Released under the MIT license
+[LICENSE](https://github.com/ynct-uchida-lab/py_modules/blob/master/LICENSE)
 
+## Other
+
+内容についてのバグや要望についてはissuesへお願いします．
 
